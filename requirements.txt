@@ -1,0 +1,3 @@
+pyTelegramBotAPI
+msgspec
+g4f
