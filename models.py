@@ -8,7 +8,7 @@ class UserSettings(Struct):
 
 class User(Struct):
     id: str | int
-    settings: UserSettings
+    settings: UserSettings = UserSettings()
 
 class Data(Struct):
     users: list[User]
