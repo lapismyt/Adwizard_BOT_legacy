@@ -12,7 +12,7 @@ bot = TeleBot(token)
 def cmd_start(message):
     data = models.Data.load()
     if data.get_user(message.from_user.id) is None:
-        user = models.User()
+        user = models.User(message.from_user.id)
         data.users.append(user)
         data.dump()
     bot.send_message(message.from_user.id, "Привет! Если не знаешь, с чего начать - спроси меня о чём-нибудь. Попроси расскзаать исторический факт, написать код, или сочинить стихотворение.")
