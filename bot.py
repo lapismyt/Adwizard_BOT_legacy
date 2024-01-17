@@ -34,7 +34,7 @@ def text_handler(message):
     response = g4f.ChatCompletion.create(
         model = g4f.models.gpt_4,
         messages = user.settings.conversation,
-        provider = g4f.Provider.You
+        provider = g4f.Provider.Bing
     )
     user.settings.conversation.append({"role": "assistant", "content": response})
     data.dump()
