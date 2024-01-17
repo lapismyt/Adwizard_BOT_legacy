@@ -27,6 +27,7 @@ def clear_context(message):
 
 @bot.message_handler(content_types=["text"])
 def text_handler(message):
+    wait = bot.send_message(message.from_user.id, "Пожалуйста, подождите...")
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     user.settings.conversation.append({"role": "user", "content": message.text})
@@ -37,6 +38,7 @@ def text_handler(message):
     user.settings.conversation.append({"role": "assistant", "content": response})
     data.dump()
     bot.send_message(message.from_user.id, response, parse_mode="markdown")
+    bot.delete_message(wait.chat.id, wait.message_id)
 
 
 if __name__ == "__main__":
