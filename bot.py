@@ -15,7 +15,15 @@ def cmd_start(message):
         user = models.User(message.from_user.id)
         data.users.append(user)
         data.dump()
-    bot.send_message(message.from_user.id, "Привет! Если не знаешь, с чего начать - спроси меня о чём-нибудь. Попроси расскзаать исторический факт, написать код, или сочинить стихотворение.")
+    bot.send_message(message.from_user.id, "Привет! Если не знаешь, с чего начать - спроси меня о чём-нибудь. Ты можешь попросить меня рассказать исторический факт, написать код, или сочинить стихотворение.")
+
+@bot.message_handler(commands=["clear"])
+def clear_context(message):
+    data = models.Data.load()
+    user = data.get_user(message.from_user.id)
+    user.settings.conversation = []
+    data.dump()
+    bot.send_message(message.from_user.id, "Переписка очищена.")
 
 @bot.message_handler(content_types=["text"])
 def text_handler(message):
