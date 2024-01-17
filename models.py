@@ -20,11 +20,11 @@ class Data(Struct):
         return None
 
     def dump(self):
-         with open("data.json", "w") as f:
+         with open("data.json", "wb") as f:
             f.write(encode(self))
     
     @staticmethod
     def load():
-        with open("data.json", "r") as f:
+        with open("data.json", "rb") as f:
             data = decode(f.read(), type=Data)
         return data
