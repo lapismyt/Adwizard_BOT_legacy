@@ -11,7 +11,7 @@ bot = TeleBot(token)
 @bot.message_handler(commands=["start"])
 def cmd_start(message):
     data = models.Data.load()
-    if not data.get_user(message.from_user.id) is None:
+    if data.get_user(message.from_user.id) is None:
         user = models.User()
         data.users.append(user)
         data.dump()
