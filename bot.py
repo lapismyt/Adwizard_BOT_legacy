@@ -2,11 +2,21 @@ from telebot import TeleBot
 from telebot import types
 import g4f
 import models
+import os
+import time
 
 with open("token.txt") as f:
     token = f.read().strip()
 
 bot = TeleBot(token)
+
+@bot.message_handler(commands=["copy"])
+def copy(message):
+    os.system(f"cp data.json copies/data-{int(time.time())}.json")
+    with open("data.json", "rb") as f:
+        file = f.read()
+    bot.send_document(message.from_user.id, f.read(), filename="data.json")
+    bot.send_message(message.from_user.id, "Резервная копия создана.")
 
 @bot.message_handler(commands=["start"])
 def cmd_start(message):
