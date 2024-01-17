@@ -14,8 +14,7 @@ bot = TeleBot(token)
 def copy(message):
     os.system(f"cp data.json copies/data-{int(time.time())}.json")
     with open("data.json", "rb") as f:
-        file = f.read()
-    bot.send_document(message.from_user.id, file, filename="data.json")
+        bot.send_document(message.from_user.id, f)
     bot.send_message(message.from_user.id, "Резервная копия создана.")
 
 @bot.message_handler(commands=["start"])
