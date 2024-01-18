@@ -93,10 +93,8 @@ def text_handler(message):
     user = data.get_user(message.from_user.id)
     user.settings.conversation.append({"role": "user", "content": message.text})
     try:
-        if user.settings.model == "gpt-3.5-turbo":
+        if user.settings.model in ["gpt-3.5-turbo", "gpt-4"]:
             provider = g4f.Provider.GeekGpt
-        elif user.settings.model == "gpt-4":
-            provider = g4f.Provider.Phind
         else:
             provider = None
         response = g4f.ChatCompletion.create(
