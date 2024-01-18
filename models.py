@@ -12,6 +12,13 @@ class User(Struct):
 
 class Data(Struct):
     users: list[User]
+    scenarios: dict = {"default": "You are a helpful assistant".}
+
+    def get_scenario(self, scenario):
+        if not scenario in self.scenarios.keys():
+            return None
+        else:
+            return self.scenarios[scenario]
 
     def get_user(self, id):
         for usr in self.users:
