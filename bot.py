@@ -36,7 +36,7 @@ def clear_context(message):
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     s = data.get_scenario(user.settings.scenario)
-    user.settings.conversation = [{"role": "system", "content": s}, {"role": "assistant", "content": "OK"}]
+    user.settings.conversation = [{"role": "user", "content": s}, {"role": "assistant", "content": "OK"}]
     data.dump()
     bot.send_message(message.from_user.id, "Переписка очищена.")
 
