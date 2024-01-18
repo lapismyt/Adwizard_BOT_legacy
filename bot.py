@@ -103,8 +103,9 @@ def text_handler(message):
             model = user.settings.model,
             messages = user.settings.conversation
         )
-    except:
+    except BaseException as err:
         bot.send_message(message.chat.id, "Ошибка!")
+        print(repr(err))
         return None
     user.settings.conversation.append({"role": "assistant", "content": response})
     data.dump()
