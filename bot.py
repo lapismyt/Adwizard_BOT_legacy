@@ -70,7 +70,7 @@ def choose_scenario(message):
     else:
         user.settings.scenario = scenario
         data.dump()
-        bot.send_message(message.chat.id, f"Выбран сценарий: {scenario}. Используйте /clear для того, что бы он заработал.\n\nЧтобы вернуться к сценарию ао умолчанию, используйте ```/scenario default```.", parse_mode="markdown")
+        bot.send_message(message.chat.id, f"Выбран сценарий: {scenario}. Используйте /clear для того, что бы он заработал.\n\nЧтобы вернуться к сценарию ао умолчанию, используйте `/scenario default`.", parse_mode="markdown")
 
 @bot.message_handler(commands=["make_scenario"])
 def make_scenario(message):
