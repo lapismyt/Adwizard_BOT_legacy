@@ -93,10 +93,17 @@ def text_handler(message):
     user.settings.conversation.append({"role": "user", "content": message.text})
     user.settings.conversation.append({"role": "system", "content": data.get_scenario(user.settings.scenario)})
     try:
+        if user.settings.model == "gpt-3.5-turbo":
+            provider = g4f.Provider.GeekGpt
+        elif user.settings.model == "gpt-4":
+            provider = g4f.Provider.Phind
+        else:
+            provider = None
         response = g4f.ChatCompletion.create(
             model = user.settings.model,
             messages = user.settings.conversation,
-            stream = False
+            stream = False,
+            provider = provider
         )
     except BaseException as err:
         bot.send_message(message.chat.id, "Ошибка!")
