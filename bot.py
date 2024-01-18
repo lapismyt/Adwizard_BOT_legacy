@@ -7,10 +7,7 @@ import time
 
 GPT_MODELS = [
     "gpt-3.5-turbo",
-    "gpt-4",
-    "gemini-pro",
-    "claude_v2",
-    "palm"
+    "gpt-4"
 ]
 
 with open("token.txt") as f:
