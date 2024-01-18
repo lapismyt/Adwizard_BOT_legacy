@@ -91,7 +91,7 @@ def text_handler(message):
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     user.settings.conversation.append({"role": "user", "content": message.text})
-    user.settings.conversation.append({"role": "user", "content": data.get_scenario(user.settings.scenario)})
+    user.settings.conversation.append({"role": "system", "content": data.get_scenario(user.settings.scenario)})
     try:
         response = g4f.ChatCompletion.create(
             model = user.settings.model,
