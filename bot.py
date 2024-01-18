@@ -36,7 +36,7 @@ def clear_context(message):
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     s = data.get_scenario(user.settings.scenario)
-    user.settings.conversation = [{"role": "system", "content": s}]
+    user.settings.conversation = [{"role": "system", "content": s}, {"role": "assistant", "content": "OK"}]
     data.dump()
     bot.send_message(message.from_user.id, "Переписка очищена.")
 
@@ -91,7 +91,6 @@ def text_handler(message):
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     user.settings.conversation.append({"role": "user", "content": message.text})
-    user.settings.conversation.append({"role": "system", "content": data.get_scenario(user.settings.scenario)})
     try:
         if user.settings.model == "gpt-3.5-turbo":
             provider = g4f.Provider.GeekGpt
