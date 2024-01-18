@@ -77,6 +77,7 @@ def make_scenario(message):
     if len(message.text.split()) >= 3:
         data = models.Data.load()
         if message.text.split()[1] in data.scenarios.keys():
+            bot.send_message(message.chat.id, "Сценарий уже существует.")
             return None
         cut = len(message.text.split()[1]) + 16
         data.scenarios[message.text.split()[1]] = message.text[cut:]
