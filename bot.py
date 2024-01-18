@@ -98,10 +98,14 @@ def text_handler(message):
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     user.settings.conversation.append({"role": "user", "content": message.text})
-    response = g4f.ChatCompletion.create(
-        model = user.settings.model,
-        messages = user.settings.conversation
-    )
+    try:
+        response = g4f.ChatCompletion.create(
+            model = user.settings.model,
+            messages = user.settings.conversation
+        )
+    except:
+        bot.send_message(message.chat.id, "Ошибка!")
+        return None
     user.settings.conversation.append({"role": "assistant", "content": response})
     data.dump()
     bot.send_message(message.chat.id, response, parse_mode="markdown")
