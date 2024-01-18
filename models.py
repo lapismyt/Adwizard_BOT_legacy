@@ -4,7 +4,7 @@ from msgspec.json import decode, encode
 class UserSettings(Struct):
     conversation: list = []
     scenario: str = "default"
-    model: str = "gpt-4-0613"
+    model: str = "gpt-4"
 
 class User(Struct):
     id: str | int

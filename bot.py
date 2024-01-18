@@ -7,14 +7,10 @@ import time
 
 GPT_MODELS = [
     "gpt-3.5-turbo",
-    "gpt-3.5-turbo-16k",
-    "gpt-3.5-turbo-16k-0613",
-    "gpt-4-0613",
-    "code-davinci-002",
-    "text-davinci-003",
-    "text-ada-001",
-    "text-curie-001",
-    "text-babbage-001"
+    "gpt-4",
+    "gemini-pro",
+    "claude_v2",
+    "palm"
 ]
 
 with open("token.txt") as f:
@@ -101,7 +97,8 @@ def text_handler(message):
     try:
         response = g4f.ChatCompletion.create(
             model = user.settings.model,
-            messages = user.settings.conversation
+            messages = user.settings.conversation,
+            stream = False
         )
     except BaseException as err:
         bot.send_message(message.chat.id, "Ошибка!")
