@@ -52,7 +52,7 @@ def switch_model(message):
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     if message.text.lower() == "/model":
-        bot.send_message(message.chat.id, "Доступные модели:\n" + {"\n".join(GPT_MODELS)})
+        bot.send_message(message.chat.id, "Доступные модели:\n" + "\n".join(GPT_MODELS))
         return None
     m = message.text[7:]
     if m in GPT_MODELS:
@@ -60,7 +60,7 @@ def switch_model(message):
         data.dump()
         bot.send_message(message.chat.id, f"Модель выбрана: {m}")
     else:
-        bot.send_message(message.chat.id, "Неизвестная модель. Доступные модели:\n" + {"\n".join(GPT_MODELS)})
+        bot.send_message(message.chat.id, "Неизвестная модель. Доступные модели:\n" + "\n".join(GPT_MODELS))
 
 @bot.message_handler(commands=["scenario"])
 def choose_scenario(message):
