@@ -49,7 +49,7 @@ def clear_context(message):
 
 @bot.message_handler(commands=["model"])
 def switch_model(message):
-    data = modela.Data.load()
+    data = models.Data.load()
     user = data.get_user(message.from_user.id)
     if message.text.lower() == "/model":
         bot.send_message(message.chat.id, "Доступные модели:\n" + {"\n".join(GPT_MODELS)})
