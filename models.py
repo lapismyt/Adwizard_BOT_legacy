@@ -25,6 +25,8 @@ class Data(Struct):
             if usr.id == id:
                 if usr.settings.model == "gpt-4-0613":
                     usr.settings.model = "gpt-4"
+                if usr.settings.model == "gpt-3.5-turbo":
+                    usr.settings.model == "gpt-3.5"
                 return usr
         return None
 
