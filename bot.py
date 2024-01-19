@@ -6,7 +6,8 @@ import os
 import time
 
 GPT_MODELS = [
-    "gpt-3.5",
+    "gpt-3.5-turbo",
+    "gpt-3.5-long",
     "gpt-4"
 ]
 
@@ -100,19 +101,13 @@ def text_handler(message):
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     try:
-        if user.settings.model == "gpt-3.5":
-            model = g4f.models.gpt_35_long
-        elif user.settings.model == "gpt-4":
-            model = g4f.models.gpt_4
-        else:
-            model = None
         conv = user.settings.conversation
         conv.append({"role": "user", "content": message.text})
         conv.append({"role": "system", "content": "Stay in character!"})
         response = g4f.ChatCompletion.create(
-            model = model,
+            model = user.settings.model,
             messages = conv,
-            stream = False,
+            stream = False
         )
         user.settings.conversation = conv[:]
     except BaseException as err:
