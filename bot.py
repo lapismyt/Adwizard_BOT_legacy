@@ -100,10 +100,12 @@ def text_handler(message):
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     try:
-        if user.settings.model in ["gpt-3.5-turbo", "gpt-4"]:
-            provider = g4f.Provider.GptChatly
+        if user.settings.model == "gpt-3.5-turbo":
+            model = g4f.models.gpt_35_long
+        elif user.settings.model == "gpt-4":
+            model = g4f.models.gpt_4
         else:
-            provider = None
+            model = None
         conv = user.settings.conversation
         conv.append({"role": "user", "content": message.text})
         conv.append({"role": "system", "content": "Stay in character!"})
@@ -111,7 +113,6 @@ def text_handler(message):
             model = user.settings.model,
             messages = conv,
             stream = False,
-            provider = provider
         )
         user.settings.conversation = conv[:]
     except BaseException as err:
