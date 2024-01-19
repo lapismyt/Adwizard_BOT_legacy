@@ -86,6 +86,14 @@ def make_scenario(message):
     else:
         bot.send_message(message.chat.id, "Использование: /make_scenario [название] [промпт]")
 
+@bot.message_handler(commands=["cancel"])
+def cmd_cancel(message):
+    data = models.Data.load()
+    user = data.get_user(message.from_user.id)
+    user.settings.conversation = user.settings.conversation[:-2]
+    data.dump()
+    bot.send_message(message.chat.id, "Отмена")
+
 @bot.message_handler(content_types=["text"])
 def text_handler(message):
     wait = bot.send_message(message.chat.id, "Пожалуйста, подождите...")
