@@ -102,8 +102,9 @@ def text_handler(message):
     user = data.get_user(message.from_user.id)
     try:
         conv = user.settings.conversation
+        if len(conv) >= (2 * 8):
+            conv.append({"role": "system", "content": "Stay in character!"})
         conv.append({"role": "user", "content": message.text})
-        conv.append({"role": "system", "content": "Stay in character!"})
         response = g4f.ChatCompletion.create(
             model = user.settings.model,
             messages = conv,

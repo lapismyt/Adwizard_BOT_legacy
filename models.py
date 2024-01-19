@@ -2,9 +2,9 @@ from msgspec import Struct
 from msgspec.json import decode, encode
 
 class UserSettings(Struct):
-    conversation: list = []
+    conversation: list = [{"role": "system", "content": "You are a helpful assistant."}]
     scenario: str = "default"
-    model: str = "gpt-4"
+    model: str = "gpt-3.5-turbo"
 
 class User(Struct):
     id: str | int
