@@ -99,18 +99,21 @@ def text_handler(message):
     wait = bot.send_message(message.chat.id, "Пожалуйста, подождите...")
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
-    user.settings.conversation.append({"role": "user", "content": message.text})
     try:
         if user.settings.model in ["gpt-3.5-turbo", "gpt-4"]:
-            provider = g4f.Provider.GeekGpt
+            provider = g4f.Provider.GptChatly
         else:
             provider = None
+        conv = user.settings.conversation
+        conv.append({"role": "user", "content": message.text})
+        conv.append({"role": "system", "content": "Stay in character!"})
         response = g4f.ChatCompletion.create(
             model = user.settings.model,
-            messages = user.settings.conversation,
+            messages = conv,
             stream = False,
             provider = provider
         )
+        user.settings.conversation = conv[:]
     except BaseException as err:
         bot.send_message(message.chat.id, "Ошибка!")
         print(repr(err))
