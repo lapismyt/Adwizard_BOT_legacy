@@ -1,6 +1,6 @@
 from telebot import TeleBot
 from telebot import types
-import g4f
+import openai
 import models
 import os
 import time
@@ -9,9 +9,16 @@ from pydub import AudioSegment
 
 GPT_MODELS = [
     "gpt-3.5-turbo",
-    "gpt-3.5-long",
-    "gpt-4"
+    "gpt-3.5-turbo-0613",
+    "gpt-3.5-turbo-16k-0613",
+    "gpt-3.5-turbo-16k",
+    "gpt-4",
+    "got-4-0613",
+    "gpt-4-1106-preview"
 ]
+
+openai.api_key = "sk-2AAszqIqRyl6KXxmC908BfB27fFb45C89714Ed8f0e22386a"
+openai.api_base = "https://neuroapi.host/v1"
 
 with open("token.txt") as f:
     token = f.read().strip()
@@ -127,7 +134,7 @@ def handle_req(message, text, vc=False):
     try:
         conv = user.settings.conversation
         conv.append({"role": "user", "content": text})
-        response = g4f.ChatCompletion.create(
+        response = openai.ChatCompletion.create(
             model = user.settings.model,
             messages = conv,
             stream = False
