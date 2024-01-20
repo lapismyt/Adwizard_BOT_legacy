@@ -32,7 +32,7 @@ def cmd_start(message):
         user = models.User(message.from_user.id)
         data.users.append(user)
         data.dump()
-    bot.send_message(message.chat.id, "Привет! Если не знаешь, с чего начать - спроси меня о чём-нибудь. Ты можешь попросить меня рассказать исторический факт, написать код, или сочинить стихотворение.")
+    bot.send_message(message.chat.id, "Привет! Если не знаешь, с чего начать - спроси меня о чём-нибудь. Ты можешь попросить меня рассказать исторический факт, написать код, или сочинить стихотворение.\n\nЧат - https://t.me/+cRAejyefoDsyMTky.")
 
 @bot.message_handler(commands=["clear"])
 def clear_context(message):
@@ -63,7 +63,7 @@ def choose_scenario(message):
     if len(message.text) > 10:
         scenario = message.text.split()[1]
     else:
-        bot.send_message(message.chat.id, "Использование: /scenario [сценарий]")
+        bot.send_message(message.chat.id, "Использование: /scenario [сценарий]\n\nСценарии можно найти в нашем чате: https://t.me/+cRAejyefoDsyMTky.")
         return None
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
@@ -73,7 +73,7 @@ def choose_scenario(message):
     else:
         user.settings.scenario = scenario
         data.dump()
-        bot.send_message(message.chat.id, f"Выбран сценарий: {scenario}. Используйте /clear для того, что бы он заработал.\n\nЧтобы вернуться к сценарию ао умолчанию, используйте /scenario default.")
+        bot.send_message(message.chat.id, f"Выбран сценарий: {scenario}. Используйте /clear для того, что бы он заработал.\n\nЧтобы вернуться к сценарию ао умолчанию, используйте /scenario default.\n\nЕсли сценарий не работает - попробуйте модель gpt-3.5-long.")
 
 @bot.message_handler(commands=["make_scenario"])
 def make_scenario(message):
@@ -103,6 +103,7 @@ def text_handler(message):
 
 @bot.message_handler(content_types=["voice"])
 def vc_handler(message):
+    msg = bot.send_message(message.chat.id, "Распознаю голос...")
     voice_message = bot.get_file(message.voice.file_id)
     voice_file = bot.download_file(voice_message.file_path)
     vcid = f"vc-{int(time.time()*100)}"
@@ -115,11 +116,12 @@ def vc_handler(message):
     with sr.AudioFile(f"tmp/{vcid}.wav") as source:
         audio_data = recognizer.record(source)
         text = recognizer.recognize_google(audio_data, language='ru-RU')
-    bot.send_message(message.chat.id, f"Распознан текст: {text}")
+    bot.send_message(message.chat.id, f"Распознано: {text}")
+    bot.delete_message(msg.chat.id, msg.message_id)
     handle_req(message, text, vc=True)
 
 def handle_req(message, text, vc=False):
-    wait = bot.send_message(message.chat.id, "Пожалуйста, подождите...")
+    wait = bot.send_message(message.chat.id, "Думаю над ответом...")
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     try:
