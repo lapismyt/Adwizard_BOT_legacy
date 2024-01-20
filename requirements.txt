@@ -1,3 +1,5 @@
 pyTelegramBotAPI
 msgspec
 g4f
+SpeechRecognition
+pydub

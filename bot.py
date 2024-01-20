@@ -4,6 +4,8 @@ import g4f
 import models
 import os
 import time
+import speech_recognition as sr
+from pydub import AudioSegment
 
 GPT_MODELS = [
     "gpt-3.5-turbo",
@@ -97,12 +99,32 @@ def cmd_cancel(message):
 
 @bot.message_handler(content_types=["text"])
 def text_handler(message):
+    handle_req(message, message.text)
+
+@bot.message_handler(content_types=["voice"])
+def vc_handler(message):
+    voice_message = bot.get_file(message.voice.file_id)
+    voice_file = bot.download_file(voice_message.file_path)
+    vcid = f"vc-{int(time.time()*100)}"
+    with open(f"tmp/{vcid}.ogg", "wb") as f:
+        f.write(voice_file)
+    audio = AudioSegment.from_ogg(f"tmp/{vcid}.ogg")
+    audio.export(f"tmp/{vcid}.wav", format="wav")
+    os.remove(f"tmp/{vcid}.ogg")
+    recognizer = sr.Recognizer()
+    with sr.AudioFile(f"tmp/{vcid}.wav") as source:
+        audio_data = recognizer.record(source)
+        text = recognizer.recognize_google(audio_data, language='ru-RU')
+    bot.send_message(message.chat.id, f"Распознан текст: {text}")
+    handle_req(message, text, vc=True)
+
+def handle_req(message, text, vc=False):
     wait = bot.send_message(message.chat.id, "Пожалуйста, подождите...")
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     try:
         conv = user.settings.conversation
-        conv.append({"role": "user", "content": message.text})
+        conv.append({"role": "user", "content": text})
         response = g4f.ChatCompletion.create(
             model = user.settings.model,
             messages = conv,
