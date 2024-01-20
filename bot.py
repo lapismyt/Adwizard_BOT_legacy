@@ -139,6 +139,7 @@ def handle_req(message, text, vc=False):
             messages = conv,
             stream = False
         )
+        response = response.choices[0].content
         user.settings.conversation = conv[:]
     except BaseException as err:
         bot.send_message(message.chat.id, "Ошибка!")
