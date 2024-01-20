@@ -2,4 +2,4 @@ pyTelegramBotAPI
 msgspec
 SpeechRecognition
 pydub
-openai
+openai==0.28
