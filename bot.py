@@ -14,7 +14,13 @@ GPT_MODELS = [
     "gpt-3.5-turbo-16k",
     "gpt-4",
     "gpt-4-0613",
-    "gpt-4-1106-preview"
+    "gpt-4-1106-preview",
+    "nousresearch/nous-capybara-7b",
+    "mistralai/mistral-7b-instruct",
+    "huggingfaceh4/zephyr-7b-beta",
+    "openchat/openchat-7b",
+    "gryphe/mythomist-7b",
+    "openrouter/cinematika-7b"
 ]
 
 openai.api_key = "sk-2AAszqIqRyl6KXxmC908BfB27fFb45C89714Ed8f0e22386a"
