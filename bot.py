@@ -39,7 +39,8 @@ def cmd_start(message):
         user = models.User(message.from_user.id)
         data.users.append(user)
         data.dump()
-    bot.send_message(message.chat.id, "Привет! Если не знаешь, с чего начать - спроси меня о чём-нибудь. Ты можешь попросить меня рассказать исторический факт, написать код, или сочинить стихотворение.\n\nЧат - https://t.me/+cRAejyefoDsyMTky.")
+    bot.send_message(message.chat.id, "Привет! Если не знаешь, с чего начать - спроси меня о чём-нибудь. Модешь отправить свой вопрос текстом или голосовым сообщением. Ты можешь попросить меня рассказать исторический факт, написать код, или сочинить стихотворение.\n\nЧат - https://t.me/+cRAejyefoDsyMTky.", disable_web_page_preview=True)
+    bot.send_message(message.chat.id, "Я поддерживаю сценарии - системные инструкции для определения моего поведения. Текстовая игра, виртуальная девушка, специалист в определённой сфере, имитация Linux-терминала - почти всё, что может быть связано с текстом, могу делать я, главное выбрать нужный сценарий. Найти сценарии можно в нашем чате - https://t.me/+cRAejyefoDsyMTky.", disable_web_page_preview=True)
 
 @bot.message_handler(commands=["clear"])
 def clear_context(message):
@@ -80,7 +81,7 @@ def choose_scenario(message):
     else:
         user.settings.scenario = scenario
         data.dump()
-        bot.send_message(message.chat.id, f"Выбран сценарий: {scenario}. Используйте /clear для того, что бы он заработал.\n\nЧтобы вернуться к сценарию ао умолчанию, используйте /scenario default.\n\nЕсли сценарий не работает - попробуйте модель gpt-3.5-long.")
+        bot.send_message(message.chat.id, f"Выбран сценарий: {scenario}. Используйте /clear для того, что бы он заработал.\n\nЧтобы вернуться к сценарию ао умолчанию, используйте /scenario default.\n\nЕсли сценарий не работает - попробуйте выбрать дркгую модель.")
 
 @bot.message_handler(commands=["make_scenario"])
 def make_scenario(message):

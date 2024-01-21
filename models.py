@@ -23,8 +23,8 @@ class Data(Struct):
     def get_user(self, id):
         for usr in self.users:
             if usr.id == id:
-                if usr.settings.model == "gpt-4-0613":
-                    usr.settings.model = "gpt-4"
+                if usr.settings.model == "gpt-3.5-long":
+                    usr.settings.model = "gpt-3.5-turbo-16k"
                 if usr.settings.model == "gpt-3.5":
                     usr.settings.model == "gpt-3.5-turbo"
                 return usr
