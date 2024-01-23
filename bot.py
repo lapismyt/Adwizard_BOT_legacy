@@ -176,9 +176,8 @@ def handle_req(message, text, skipped=False):
             success = True
             tries += 1
         except BaseException as err:
-            bot.send_message(message.chat.id, "*⛔ Ошибка!*", parse_mode="markdown")
             print(repr(err))
-            return None
+    bot.send_message(message.chat.id, "*⛔ Ошибка!*", parse_mode="markdown")
 
 
 if __name__ == "__main__":
