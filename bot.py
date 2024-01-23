@@ -174,10 +174,11 @@ def handle_req(message, text, skipped=False):
             bot.send_message(message.chat.id, response, parse_mode="markdown")
             bot.delete_message(wait.chat.id, wait.message_id)
             success = True
-            tries += 1
+            return None
         except BaseException as err:
             print(repr(err))
             time.sleep(3)
+            tries += 1
     bot.send_message(message.chat.id, "*⛔ Ошибка!*", parse_mode="markdown")
 
 
