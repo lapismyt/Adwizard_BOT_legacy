@@ -177,6 +177,7 @@ def handle_req(message, text, skipped=False):
             tries += 1
         except BaseException as err:
             print(repr(err))
+            time.sleep(3)
     bot.send_message(message.chat.id, "*⛔ Ошибка!*", parse_mode="markdown")
 
 
