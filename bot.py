@@ -110,6 +110,7 @@ def cmd_cancel(message):
     user.settings.conversation = user.settings.conversation[:-2]
     data.dump()
     bot.send_message(message.chat.id, "*🕓 Отматываю время назад...*", parse_mode="markdown")
+    time.sleep(3)
     bot.send_message(message.chat.id, "*✨ Ваш предыдущий запрос стёрт из этой временной линии!*", parse_mode="markdown")
 
 @bot.message_handler(commands=["sendall"])
