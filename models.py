@@ -32,10 +32,10 @@ class Data(Struct):
 
     def dump(self):
          with open("data.json", "wb") as f:
-            f.write(encode(self))
+            f.write(encode(self, indent=2))
     
     @staticmethod
     def load():
         with open("data.json", "rb") as f:
-            data = decode(f.read(), type=Data)
+            data = decode(f.read(), type=Data, indent=2)
         return data

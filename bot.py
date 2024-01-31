@@ -33,8 +33,9 @@ bot = TeleBot(token)
 
 @bot.message_handler(commands=["copy"])
 def copy(message):
-    os.system(f"cp data.json copies/data-{int(time.time())}.json")
-    with open("data.json", "rb") as f:
+    filename = f"data-{int(time.time())}.json"
+    os.system(f"cp data.json copies/{filename}")
+    with open("copies/{filename}", "rb") as f:
         bot.send_document(message.from_user.id, f)
     bot.send_message(message.chat.id, "Резервная копия создана.")
 
@@ -55,7 +56,7 @@ def clear_context(message):
     s = data.get_scenario(user.settings.scenario)
     user.settings.conversation = [{"role": "system", "content": s}]
     data.dump()
-    bot.send_message(message.from_user.id, "Переписка очищена.")
+    bot.send_message(message.from_user.id, "*🧹 Переписка очищена.*", parse_mode="markdown")
 
 @bot.message_handler(commands=["model"])
 def switch_model(message):
@@ -109,9 +110,10 @@ def cmd_cancel(message):
     user = data.get_user(message.from_user.id)
     user.settings.conversation = user.settings.conversation[:-2]
     data.dump()
-    bot.send_message(message.chat.id, "*🕓 Отматываю время назад...*", parse_mode="markdown")
-    time.sleep(3)
+    a = bot.send_message(message.chat.id, "*🕓 Отматываю время назад...*", parse_mode="markdown")
+    time.sleep(1)
     bot.send_message(message.chat.id, "*✨ Ваш предыдущий запрос стёрт из этой временной линии!*", parse_mode="markdown")
+    bot.delete_message(a.chat.id, a.message_id)
 
 @bot.message_handler(commands=["sendall"])
 def cmd_sendall(message):
@@ -161,6 +163,8 @@ def handle_req(message, text, skipped=False):
             conv = user.settings.conversation
             if not skipped:
                 conv.append({"role": "user", "content": text})
+            else:
+                conv.append({"role": "system", "content": "continue"})
             response = openai.ChatCompletion.create(
                 model = user.settings.model,
                 messages = conv,
