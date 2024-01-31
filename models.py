@@ -37,5 +37,5 @@ class Data(Struct):
     @staticmethod
     def load():
         with open("data.json", "rb") as f:
-            data = decode(f.read(), type=Data, indent=2)
+            data = decode(f.read(), type=Data)
         return data
