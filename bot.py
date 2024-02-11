@@ -166,7 +166,6 @@ def handle_req(message, text, skipped=False):
                 stream = False,
                 provider = provider
             )
-            response = response.choices[0].message.content
             user.settings.conversation = conv[:]
             user.settings.conversation.append({"role": "assistant", "content": response})
             data.dump()
