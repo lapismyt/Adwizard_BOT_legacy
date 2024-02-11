@@ -3,3 +3,4 @@ msgspec
 SpeechRecognition
 pydub
 openai==0.28
+g4f

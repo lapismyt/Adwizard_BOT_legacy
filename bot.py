@@ -9,22 +9,10 @@ from pydub import AudioSegment
 
 GPT_MODELS = [
     "gpt-3.5-turbo",
-    "gpt-3.5-turbo-0613",
-    "gpt-3.5-turbo-16k-0613",
-    "gpt-3.5-turbo-16k",
-    "gpt-4",
-    "gpt-4-0613",
-    "gpt-4-1106-preview",
-    "nousresearch/nous-capybara-7b",
-    "mistralai/mistral-7b-instruct",
-    "huggingfaceh4/zephyr-7b-beta",
-    "openchat/openchat-7b",
-    "gryphe/mythomist-7b",
-    "openrouter/cinematika-7b"
+    "gpt-4"
 ]
 
-openai.api_key = "sk-2AAszqIqRyl6KXxmC908BfB27fFb45C89714Ed8f0e22386a"
-openai.api_base = "https://neuroapi.host/v1"
+openai.api_base = "https://localhost:1337/v1"
 
 with open("token.txt") as f:
     token = f.read().strip()
@@ -35,7 +23,7 @@ bot = TeleBot(token)
 def copy(message):
     filename = f"data-{int(time.time())}.json"
     os.system(f"cp data.json copies/{filename}")
-    with open("copies/{filename}", "rb") as f:
+    with open(f"copies/{filename}", "rb") as f:
         bot.send_document(message.from_user.id, f)
     bot.send_message(message.chat.id, "Резервная копия создана.")
 
