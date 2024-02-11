@@ -12,7 +12,7 @@ GPT_MODELS = [
     "gpt-4"
 ]
 
-openai.api_base = "https://localhost:10000/v1"
+openai.api_base = "http://localhost:10000/v1"
 openai.api_key = "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"
 
 with open("token.txt") as f:
