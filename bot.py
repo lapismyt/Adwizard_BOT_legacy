@@ -1,19 +1,20 @@
 from telebot import TeleBot
 from telebot import types
-import openai
+import g4f
 import models
 import os
 import time
 import speech_recognition as sr
 from pydub import AudioSegment
+from g4f.Provider import FreeGpt, You, Chatgpt4Online, ChatgptDemoAi, ChatgptNext, ChatgptDemo, Gpt6, RetryProvider
 
 GPT_MODELS = [
     "gpt-3.5-turbo",
-    "gpt-4"
+    "gpt-3.5-turbo-16k",
+    "gpt-4",
+    "gpt-4-0613",
+    "gemini"
 ]
-
-openai.api_base = "http://localhost:10000/v1"
-openai.api_key = "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"
 
 with open("token.txt") as f:
     token = f.read().strip()
@@ -154,11 +155,16 @@ def handle_req(message, text, skipped=False):
                 conv.append({"role": "user", "content": text})
             else:
                 conv.append({"role": "system", "content": "continue"})
-            response = openai.ChatCompletion.create(
+            if "gpt-3.5-turbo" in user.settings.model:
+                provider = RetryProvider([FreeGpt, You, Chatgpt4Online, ChatgptDemoAi, ChatgptNext, ChatgptDemo, Gpt6])
+            else:
+                provider = None
+            response = g4f.ChatCompletion.create(
                 model = user.settings.model,
                 messages = conv,
-                temperature = 0.8,
-                stream = False
+                temperature = 0.7,
+                stream = False,
+                provider = provider
             )
             response = response.choices[0].message.content
             user.settings.conversation = conv[:]
