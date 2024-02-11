@@ -12,7 +12,7 @@ GPT_MODELS = [
     "gpt-4"
 ]
 
-openai.api_base = "https://localhost:1337/v1"
+openai.api_base = "https://localhost:10000/v1"
 
 with open("token.txt") as f:
     token = f.read().strip()
