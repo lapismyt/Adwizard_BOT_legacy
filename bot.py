@@ -188,7 +188,6 @@ def handle_req(message, text, skipped=False):
             response = openai.ChatCompletion.create(
                 model = user.settings.model,
                 messages = conv,
-                temperature = 0.7,
                 stream = False
             )
             response = response.choices[0].message.content
