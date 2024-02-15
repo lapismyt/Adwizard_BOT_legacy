@@ -156,7 +156,7 @@ def handle_req(message, text, skipped=False):
             else:
                 conv.append({"role": "system", "content": "continue"})
             if "gpt-3.5-turbo" in user.settings.model:
-                provider = RetryProvider([FreeGpt, Chatgpt4Online, ChatgptDemoAi, ChatgptNext, ChatgptDemo, Gpt6, GeekGpt, Liaobots, Theb, Raycast, FreeChatgpt, OpenaiChat, GptChatly, Aichat, GptGo, GeminiProChat, Koala, Aura])
+                provider = RetryProvider([FreeGpt, Chatgpt4Online, ChatgptDemoAi, ChatgptNext, ChatgptDemo, Gpt6, GeekGpt, Liaobots, Theb, Raycast, FreeChatgpt, OpenaiChat, GptChatly, Aichat, GptGo, Koala, Aura])
             elif "gpt-4" in user.settings.model:
                 provider = RetryProvider([Bing, GeekGpt, Liaobots, Theb, Raycast, FreeChatgpt, OpenaiChat])
             else:
