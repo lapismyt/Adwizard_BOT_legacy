@@ -17,7 +17,7 @@ GPT_MODELS = [
 ]
 
 openai.api_base = "https://zukijourney.xyzbot.net/unf"
-openai.api_key = "zu-adac65edf62d44be85a31b5fb6309129"
+openai.api_key = os.environ.get("ZU_KEY")
 
 with open("token.txt") as f:
     token = f.read().strip()
