@@ -1,20 +1,23 @@
 from telebot import TeleBot
 from telebot import types
-import g4f
+#import g4f
 import models
 import os
 import time
 import speech_recognition as sr
 from pydub import AudioSegment
-from g4f.Provider import FreeGpt, You, Chatgpt4Online, ChatgptDemoAi, ChatgptNext, ChatgptDemo, Gpt6, RetryProvider, GeekGpt, Liaobots, Theb, Raycast, FreeChatgpt, OpenaiChat, Bing, GptChatly, Aichat, GptGo, GeminiProChat, Koala, Aura, FakeGpt, AiAsk
+import openai
+#from g4f.Provider import FreeGpt, You, Chatgpt4Online, ChatgptDemoAi, ChatgptNext, ChatgptDemo, Gpt6, RetryProvider, GeekGpt, Liaobots, Theb, Raycast, FreeChatgpt, OpenaiChat, Bing, GptChatly, Aichat, GptGo, GeminiProChat, Koala, Aura, FakeGpt, AiAsk
 
 GPT_MODELS = [
     "gpt-3.5-turbo",
     "gpt-3.5-turbo-16k",
     "gpt-4",
-    "gpt-4-0613",
-    "gemini"
+    "gpt-4-0613"
 ]
+
+openai.api_base = "https://zukijourney.xyzbot.net/unf/chat/completions"
+openai.api_key = "zu-adac65edf62d44be85a31b5fb6309129"
 
 with open("token.txt") as f:
     token = f.read().strip()
@@ -155,19 +158,19 @@ def handle_req(message, text, skipped=False):
                 conv.append({"role": "user", "content": text})
             else:
                 conv.append({"role": "system", "content": "continue"})
-            if "gpt-3.5-turbo" in user.settings.model:
-                provider = RetryProvider([FreeGpt, Chatgpt4Online, ChatgptDemoAi, ChatgptNext, ChatgptDemo, Gpt6, GeekGpt, Liaobots, FreeChatgpt, GptChatly, Aichat, GptGo, FakeGpt, AiAsk])
-            elif "gpt-4" in user.settings.model:
-                provider = RetryProvider([Bing, GeekGpt, Liaobots, Theb, Raycast, FreeChatgpt])
-            else:
-                provider = None
-            response = g4f.ChatCompletion.create(
+            #if "gpt-3.5-turbo" in user.settings.model:
+            #    provider = RetryProvider([FreeGpt, Chatgpt4Online, ChatgptDemoAi, ChatgptNext, ChatgptDemo, Gpt6, GeekGpt, Liaobots, FreeChatgpt, GptChatly, Aichat, GptGo, FakeGpt, AiAsk])
+            #elif "gpt-4" in user.settings.model:
+            #    provider = RetryProvider([Bing, GeekGpt, Liaobots, Theb, Raycast, FreeChatgpt])
+            #else:
+            #    provider = None
+            response = openai.ChatCompletion.create(
                 model = user.settings.model,
                 messages = conv,
                 temperature = 0.7,
-                stream = False,
-                provider = provider
+                stream = False
             )
+            response = response.choices[0].message.content
             user.settings.conversation = conv[:]
             user.settings.conversation.append({"role": "assistant", "content": response})
             data.dump()
