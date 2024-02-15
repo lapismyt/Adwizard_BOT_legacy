@@ -11,13 +11,34 @@ import openai
 
 GPT_MODELS = [
     "gpt-3.5-turbo",
+    "gpt-3.5-turbo-1106",
+    "gpt-3.5-turbo-0125",
+    "gpt-3.5-turbo-instruct",
     "gpt-3.5-turbo-16k",
     "gpt-4",
-    "gpt-4-0613"
+    "claude-instant-v1",
+    "palm-2",
+    "gemini-pro",
+    "mixtral-8x7b-instruct",
+    "mistral-medium",
+    "mistral-7b-instruct",
+    "codellama-7b-instruct",
+    "llama-2-7b",
+    "llama-2-13b",
+    "llama-2-70b",
+    "mythomist-7b",
+    "mythomax-l2-13b",
+    "cinematika-7b",
+    "sheep-duck-llama",
+    "goliath-120b",
+    "nous-llama2",
+    "yi-34b",
+    "openchat",
+    "solar10-7b",
+    "pi"
 ]
 
 openai.api_base = "https://zukijourney.xyzbot.net/unf"
-openai.api_key = os.environ.get("ZU_KEY")
 
 with open("token.txt") as f:
     token = f.read().strip()
@@ -56,7 +77,7 @@ def switch_model(message):
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     if message.text.lower() == "/model":
-        bot.send_message(message.chat.id, "*Доступные модели:\n\n" + "\n".join(GPT_MODELS) + "*", parse_mode="markdown")
+        bot.send_message(message.chat.id, "*Доступные модели:\n\n" + "\n".join(GPT_MODELS) + "*\n\nТекущая модель: " + user.settings.model, parse_mode="markdown")
         return None
     m = message.text[7:]
     if m in GPT_MODELS:
