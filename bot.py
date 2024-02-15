@@ -16,7 +16,7 @@ GPT_MODELS = [
     "gpt-4-0613"
 ]
 
-openai.api_base = "https://zukijourney.xyzbot.net/unf/chat/completions"
+openai.api_base = "https://zukijourney.xyzbot.net/unf"
 openai.api_key = "zu-adac65edf62d44be85a31b5fb6309129"
 
 with open("token.txt") as f:
