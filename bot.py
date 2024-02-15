@@ -6,7 +6,7 @@ import os
 import time
 import speech_recognition as sr
 from pydub import AudioSegment
-from g4f.Provider import FreeGpt, You, Chatgpt4Online, ChatgptDemoAi, ChatgptNext, ChatgptDemo, Gpt6, RetryProvider
+from g4f.Provider import FreeGpt, You, Chatgpt4Online, ChatgptDemoAi, ChatgptNext, ChatgptDemo, Gpt6, RetryProvider, GeekGpt, Liaobots, Theb, Raycast, FreeChatgpt, OpenaiChat, Bing, GptChatly
 
 GPT_MODELS = [
     "gpt-3.5-turbo",
@@ -156,7 +156,9 @@ def handle_req(message, text, skipped=False):
             else:
                 conv.append({"role": "system", "content": "continue"})
             if "gpt-3.5-turbo" in user.settings.model:
-                provider = RetryProvider([FreeGpt, You, Chatgpt4Online, ChatgptDemoAi, ChatgptNext, ChatgptDemo, Gpt6])
+                provider = RetryProvider([FreeGpt, Chatgpt4Online, ChatgptDemoAi, ChatgptNext, ChatgptDemo, Gpt6, GeekGpt, Liaobots, Theb, Raycast, FreeChatgpt, OpenaiChat, GptChatly])
+            elif "gpt-4" in user.settings.model:
+                provider = RetryProvider([Bing, GeekGpt, Liaobots, Theb, Raycast, FreeChatgpt, OpenaiChat])
             else:
                 provider = None
             response = g4f.ChatCompletion.create(
