@@ -164,7 +164,7 @@ def vc_handler(message):
         text = recognizer.recognize_google(audio_data, language='ru-RU')
     bot.send_message(message.chat.id, f"*❗ Отвечаю на запрос: {text}*", parse_mode="markdown")
     bot.delete_message(msg.chat.id, msg.message_id)
-    handle_req(message, text, vc=True)
+    handle_req(message, text)
 
 def handle_req(message, text, skipped=False):
     wait = bot.send_message(message.chat.id, "*👨‍💻 Печатаю...*", parse_mode="markdown")
