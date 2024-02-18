@@ -149,7 +149,7 @@ def cmd_skip(message):
 
 @bot.message_handler(content_types=["voice"])
 def vc_handler(message):
-    msg = bot.send_message(message.chat.id, "*🔊 Слушаю...*")
+    msg = bot.send_message(message.chat.id, "*🔊 Слушаю...*", parse_mode="markdown")
     voice_message = bot.get_file(message.voice.file_id)
     voice_file = bot.download_file(voice_message.file_path)
     vcid = f"vc-{int(time.time()*100)}"
@@ -162,7 +162,7 @@ def vc_handler(message):
     with sr.AudioFile(f"tmp/{vcid}.wav") as source:
         audio_data = recognizer.record(source)
         text = recognizer.recognize_google(audio_data, language='ru-RU')
-    bot.send_message(message.chat.id, f"*❗ Отвечаю на запрос: {text}*", parse_mode=markdown)
+    bot.send_message(message.chat.id, f"*❗ Отвечаю на запрос: {text}*", parse_mode="markdown")
     bot.delete_message(msg.chat.id, msg.message_id)
     handle_req(message, text, vc=True)
 
