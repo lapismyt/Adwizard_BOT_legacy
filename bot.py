@@ -1,7 +1,7 @@
 from telebot import TeleBot
 from telebot import types
 import models
-from model import GPT_MODELS
+from models import GPT_MODELS
 import os
 import time
 import speech_recognition as sr
