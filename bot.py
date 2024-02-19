@@ -155,6 +155,12 @@ def handle_req(message, text, skipped=False):
     wait = bot.send_message(message.chat.id, "*👨‍💻 Печатаю...*", parse_mode="markdown")
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
+    if user.queued:
+        bot.send_message(message.chat.id, "*⏳ Подожди, пока выполнится предыдущий запрос.*", parse_mode="markdown")
+        return None
+    else:
+        user.queued = True
+        data.dump()
     success = False
     tries = 0
     while (not success) and (tries <= 5):
@@ -177,8 +183,11 @@ def handle_req(message, text, skipped=False):
                 stream = False
             )
             response = response.choices[0].message.content
+            data = models.Data.load()
+            user = data.get_user(message.from_user.id)
             user.settings.conversation = conv[:]
             user.settings.conversation.append({"role": "assistant", "content": response})
+            user.queued = False
             data.dump()
             bot.send_message(message.chat.id, response, parse_mode="markdown")
             bot.delete_message(wait.chat.id, wait.message_id)
@@ -192,4 +201,8 @@ def handle_req(message, text, skipped=False):
 
 
 if __name__ == "__main__":
+    data = models.Data.load()
+    for usr in data.users:
+        usr.queued = False
+    data.dump()
     bot.infinity_polling()

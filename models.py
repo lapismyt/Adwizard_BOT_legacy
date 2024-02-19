@@ -9,6 +9,7 @@ class UserSettings(Struct):
 class User(Struct):
     id: str | int
     settings: UserSettings = UserSettings()
+    queued: bool = False
 
 class Data(Struct):
     users: list[User]
