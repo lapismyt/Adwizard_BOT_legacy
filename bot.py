@@ -198,7 +198,10 @@ def handle_req(message, text, skipped=False):
             time.sleep(3)
             tries += 1
     bot.send_message(message.chat.id, "*⛔ Ошибка!*", parse_mode="markdown")
-
+    data = models.Data.load()
+    user = data.get_user(message.from_user.id)
+    user.queued = False
+    data.dump()
 
 if __name__ == "__main__":
     data = models.Data.load()
