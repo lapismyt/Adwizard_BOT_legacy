@@ -14,31 +14,16 @@ GPT_MODELS = [
     "gpt-3.5-turbo-1106",
     "gpt-3.5-turbo-0125",
     "gpt-3.5-turbo-instruct",
-    "gpt-3.5-turbo-16k",
+    "gpt-3.5-turbo-instruct-0914",
+    "gpt-3.5-turbo-16k-0613",
     "gpt-4",
-    "claude-instant-v1",
-    "palm-2",
-    "gemini-pro",
-    "mixtral-8x7b-instruct",
-    "mistral-medium",
-    "mistral-7b-instruct",
-    "codellama-7b-instruct",
-    "llama-2-7b",
-    "llama-2-13b",
-    "llama-2-70b",
-    "mythomist-7b",
-    "mythomax-l2-13b",
-    "cinematika-7b",
-    "sheep-duck-llama",
-    "goliath-120b",
-    "nous-llama2",
-    "yi-34b",
-    "openchat",
-    "solar10-7b",
-    "pi"
+    "gpt-4-0613"
+    "gpt-4-1106-preview",
+    "gpt-4-turbo-preview",
+    "gpt-4-0125-preview",
 ]
 
-openai.api_base = "https://zukijourney.xyzbot.net/unf"
+openai.api_base = "https://api.proxyapi.ru/openai/v1"
 
 with open("token.txt") as f:
     token = f.read().strip()
@@ -188,6 +173,7 @@ def handle_req(message, text, skipped=False):
             response = openai.ChatCompletion.create(
                 model = user.settings.model,
                 messages = conv,
+                temperature = 0.7,
                 stream = False
             )
             response = response.choices[0].message.content
