@@ -179,8 +179,9 @@ def handle_req(message, text, skipped=False):
             response = openai.ChatCompletion.create(
                 model = user.settings.model,
                 messages = conv,
-                temperature = 0.7,
-                stream = False
+                temperature = 0.8,
+                stream = False,
+                max_tokens = 3072
             )
             response = response.choices[0].message.content
             data = models.Data.load()
