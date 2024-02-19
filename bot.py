@@ -1,27 +1,12 @@
 from telebot import TeleBot
 from telebot import types
-#import g4f
 import models
+from model import GPT_MODELS
 import os
 import time
 import speech_recognition as sr
 from pydub import AudioSegment
 import openai
-#from g4f.Provider import FreeGpt, You, Chatgpt4Online, ChatgptDemoAi, ChatgptNext, ChatgptDemo, Gpt6, RetryProvider, GeekGpt, Liaobots, Theb, Raycast, FreeChatgpt, OpenaiChat, Bing, GptChatly, Aichat, GptGo, GeminiProChat, Koala, Aura, FakeGpt, AiAsk
-
-GPT_MODELS = [
-    "gpt-3.5-turbo",
-    "gpt-3.5-turbo-1106",
-    "gpt-3.5-turbo-0125",
-    "gpt-3.5-turbo-instruct",
-    "gpt-3.5-turbo-instruct-0914",
-    "gpt-3.5-turbo-16k-0613",
-    "gpt-4",
-    "gpt-4-0613",
-    "gpt-4-1106-preview",
-    "gpt-4-turbo-preview",
-    "gpt-4-0125-preview",
-]
 
 openai.api_base = "https://api.proxyapi.ru/openai/v1"
 
@@ -170,12 +155,6 @@ def handle_req(message, text, skipped=False):
                 conv.append({"role": "user", "content": text})
             else:
                 conv.append({"role": "system", "content": "continue"})
-            #if "gpt-3.5-turbo" in user.settings.model:
-            #    provider = RetryProvider([FreeGpt, Chatgpt4Online, ChatgptDemoAi, ChatgptNext, ChatgptDemo, Gpt6, GeekGpt, Liaobots, FreeChatgpt, GptChatly, Aichat, GptGo, FakeGpt, AiAsk])
-            #elif "gpt-4" in user.settings.model:
-            #    provider = RetryProvider([Bing, GeekGpt, Liaobots, Theb, Raycast, FreeChatgpt])
-            #else:
-            #    provider = None
             response = openai.ChatCompletion.create(
                 model = user.settings.model,
                 messages = conv,
