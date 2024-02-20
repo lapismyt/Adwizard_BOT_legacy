@@ -61,7 +61,9 @@ def switch_model(message):
         bot.send_message(message.chat.id, "*Доступные модели:\n\n" + "\n".join(GPT_MODELS) + "*\n\nТекущая модель: " + user.settings.model, parse_mode="markdown")
         return None
     m = message.text[7:]
-    bot.send_message(message.chat.id, "Смена моделей доступна только Premium-пользователям. Купить Premium навсегда за 250₽ -> @LapisMYT", parse_mode="markdown")
+    if not user.premium:
+        bot.send_message(message.chat.id, "Смена моделей доступна только Premium-пользователям. Купить Premium навсегда за 250₽ -> @LapisMYT", parse_mode="markdown")
+        return None
     if m in GPT_MODELS:
         user.settings.model = m
         data.dump()
@@ -121,7 +123,7 @@ def cmd_sendall(message):
             except:
                 print("Ашыпка!")
 
-@bot.message_handler(commanda=["stats"])
+@bot.message_handler(commands=["stats"])
 def cmd_stats(message):
     data = models.Data.load()
     bot.send_message(message.chat.id, f"В боте на данный момент {len(data.users)} пользователей.")
@@ -157,6 +159,31 @@ def cmd_premium(message):
         data.promos.append(cheque)
         data.dump()
         bot.send_message(message.chat.id, f"https://t.me/Adwizard_BOT?start={cheque}")
+    else:
+        if len(message.text.split()) >= 2:
+            data = models.Data.load()
+            user = data.get_user(message.text.split()[1])
+            if not len(message.text.split()) == 3:
+                bot.send_message(message.chat.id, f"У пользователя [{message.text.split()[1]}](tg://user?id={message.text.split()[1]}) есть Premium: {user.premium}")
+                return None
+            elif message.text.split()[2] == "on":
+                user.premium = True
+                data.dump()
+                try:
+                    bot.send_message(message.text.split()[1], "У вас больше нет Premium!")
+                except:
+                    pass
+                bot.send_message(message.chat.id, f"У пользователя [{message.text.split()[1]}](tg://user?id={message.text.split()[1]}) больше нет Premium.")
+                return None
+            elif message.text.split()[2] == "off":
+                user.premium = False
+                data.dump()
+                try:
+                    bot.send_message(message.text.split()[1], "У вас больше нет Premium!")
+                except:
+                    pass
+                bot.send_message(message.chat.id, f"У пользователя [{message.text.split()[1]}](tg://user?id={message.text.split()[1]}) теперь есть Premium.")
+                return None
 
 @bot.message_handler(content_types=["text"])
 def text_handler(message):

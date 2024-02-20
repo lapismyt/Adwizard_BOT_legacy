@@ -41,7 +41,7 @@ class Data(Struct):
 
     def get_user(self, id):
         for usr in self.users:
-            if usr.id == id:
+            if str(usr.id) == str(id):
                 if not usr.settings.model in GPT_MODELS:
                     usr.settings.model = "gpt-3.5-turbo"
                 if usr.premium == False:
