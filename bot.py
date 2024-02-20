@@ -7,6 +7,7 @@ import time
 import speech_recognition as sr
 from pydub import AudioSegment
 import openai
+import random
 
 openai.api_base = "https://api.proxyapi.ru/openai/v1"
 
@@ -30,8 +31,18 @@ def cmd_start(message):
         user = models.User(message.from_user.id)
         data.users.append(user)
         data.dump()
-    bot.send_message(message.chat.id, "*Привет! Если не знаешь, с чего начать - спроси меня о чём-нибудь. Модешь отправить свой вопрос текстом или голосовым сообщением. Ты можешь попросить меня рассказать исторический факт, написать код, или сочинить стихотворение.\n\nЧат - https://t.me/+cRAejyefoDsyMTky.*", disable_web_page_preview=True, parse_mode="markdown")
-    bot.send_message(message.chat.id, "*Я поддерживаю сценарии - системные инструкции для определения моего поведения. Текстовая игра, виртуальная девушка, специалист в определённой сфере, имитация Linux-терминала - почти всё, что может быть связано с текстом, могу делать я, главное выбрать нужный сценарий. Найти сценарии можно в нашем чате - https://t.me/+cRAejyefoDsyMTky.*", disable_web_page_preview=True, parse_mode="markdown")
+        bot.send_message(message.chat.id, "*Привет! Если не знаешь, с чего начать - спроси меня о чём-нибудь. Модешь отправить свой вопрос текстом или голосовым сообщением. Ты можешь попросить меня рассказать исторический факт, написать код, или сочинить стихотворение.\n\nЧат - https://t.me/+cRAejyefoDsyMTky.*", disable_web_page_preview=True, parse_mode="markdown")
+        bot.send_message(message.chat.id, "*Я поддерживаю сценарии - системные инструкции для определения моего поведения. Текстовая игра, виртуальная девушка, специалист в определённой сфере, имитация Linux-терминала - почти всё, что может быть связано с текстом, могу делать я, главное выбрать нужный сценарий. Найти сценарии можно в нашем чате - https://t.me/+cRAejyefoDsyMTky.*", disable_web_page_preview=True, parse_mode="markdown")
+    elif len(message.text) > 8:
+        if message.text.removeprefix("/start ") in data.promos:
+            user = data.get_user(message.from_user.id)
+            user.premium = True
+            data.promos.remove(message.text.removeprefix("/start "))
+            data.dump()
+            bot.send_message("5373440151", f"[{message.from_user.id}](tg://user?id={message.from_user.id}) активировал чек.", parse_mode="markdown")
+            bot.send_message(message.chat.id, "Чек активирован.")
+        else:
+            bot.send_message(message.chat.id, "Чек уже активирован.")
 
 @bot.message_handler(commands=["clear"])
 def clear_context(message):
@@ -50,6 +61,7 @@ def switch_model(message):
         bot.send_message(message.chat.id, "*Доступные модели:\n\n" + "\n".join(GPT_MODELS) + "*\n\nТекущая модель: " + user.settings.model, parse_mode="markdown")
         return None
     m = message.text[7:]
+    bot.send_message(message.chat.id, "Смена моделей доступна только Premium-пользователям. Купить Premium навсегда за 250₽ -> @LapisMYT", parse_mode="markdown")
     if m in GPT_MODELS:
         user.settings.model = m
         data.dump()
@@ -109,6 +121,43 @@ def cmd_sendall(message):
             except:
                 print("Ашыпка!")
 
+@bot.message_handler(commanda=["stats"])
+def cmd_stats(message):
+    data = models.Data.load()
+    bot.send_message(message.chat.id, f"В боте на данный момент {len(data.users)} пользователей.")
+
+@bot.message_handler(commands=["image"])
+def cmd_image(message):
+    if len(message.text) < 8:
+        bot.send_message(message.chat.id, "Использование: /image [запрос]")
+        return None
+    data = models.Data.load()
+    user = data.get_user(message.from_user.id)
+    if user.premium:
+        model = "dall-e-3"
+        size = "1024x1024"
+    else:
+        model = "dall-e-2"
+        size = "512x512"
+    res = openai.Image.create(
+        prompt = message.text.removeprefix("/image ")
+        n = 1,
+        size = size,
+        model = model
+    )
+    bot.send_photo(message.chat.id, res["data"][0]["url"])
+
+@bot.message_handler(commands=["premium"])
+def cmd_premium(message):
+    if not str(message.from_user.username) == "LapisMYT":
+        return None
+    if len(message.text) < 10:
+        data = models.Data.load()
+        cheque = str(random.randint(10000000, 99999999))
+        data.promos.append(cheque)
+        data.dump()
+        bot.send_message(message.chat.id, f"https://t.me/Adwizard_BOT?start={cheque}")
+
 @bot.message_handler(content_types=["text"])
 def text_handler(message):
     handle_req(message, message.text)
@@ -154,7 +203,7 @@ def handle_req(message, text, skipped=False):
             if not skipped:
                 conv.append({"role": "user", "content": text})
             else:
-                conv.append({"role": "system", "content": "continue"})
+                conv.append({"role": "system", "content": "Continue, please"})
             response = openai.ChatCompletion.create(
                 model = user.settings.model,
                 messages = conv,
