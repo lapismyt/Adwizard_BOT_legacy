@@ -159,6 +159,7 @@ def cmd_image(message):
             )
             bot.send_photo(message.chat.id, res["data"][0]["url"])
             bot.delete_message(msg.chat.id, msg.message_id)
+            success = True
             break
         except BaseException as err:
             pass
