@@ -148,22 +148,23 @@ def cmd_image(message):
     else:
         model = "dall-e-2"
         size = "512x512"
-    try:
-        res = openai.Image.create(
-            prompt = message.text.removeprefix("/image "),
-            n = 1,
-            size = size,
-            model = model
-        )
-        bot.send_photo(message.chat.id, res["data"][0]["url"])
-        bot.delete_message(msg.chat.id, msg.message_id)
-    except BaseException as err:
+    success = False
+    for x in range(4):
+        try:
+            res = openai.Image.create(
+                prompt = message.text.removeprefix("/image "),
+                n = 1,
+                size = size,
+                model = model
+            )
+            bot.send_photo(message.chat.id, res["data"][0]["url"])
+            bot.delete_message(msg.chat.id, msg.message_id)
+            break
+        except BaseException as err:
+            pass
+    if not success:
         bot.send_message(message.chat.id, "Ошибка!")
         print(repr(err))
-        data = models.Data.load()
-        user = data.get_user(message.from_user.id)
-        user.queued = False
-        data.dump()
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     user.queued = False
