@@ -257,7 +257,7 @@ def handle_req(message, text, skipped=False):
                 messages = conv,
                 temperature = 0.8,
                 stream = False,
-                max_tokens = 3072
+                max_tokens = 1024
             )
             response = response.choices[0].message.content
             data = models.Data.load()
