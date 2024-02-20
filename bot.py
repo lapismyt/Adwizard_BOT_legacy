@@ -162,10 +162,9 @@ def cmd_image(message):
             success = True
             break
         except BaseException as err:
-            pass
+            print(repr(err))
     if not success:
         bot.send_message(message.chat.id, "Ошибка!")
-        print(repr(err))
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     user.queued = False
