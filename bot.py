@@ -140,7 +140,7 @@ def cmd_image(message):
         model = "dall-e-2"
         size = "512x512"
     res = openai.Image.create(
-        prompt = message.text.removeprefix("/image ")
+        prompt = message.text.removeprefix("/image "),
         n = 1,
         size = size,
         model = model
