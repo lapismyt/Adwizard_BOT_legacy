@@ -135,19 +135,39 @@ def cmd_image(message):
         return None
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
+    if user.queued:
+        bot.send_message(message.chat.id, "*⏳ Подожди, пока выполнится предыдущий запрос.*", parse_mode="markdown")
+        return None
+    else:
+        user.queued = True
+        data.dump()
+    msg = bot.send_message(message.chat.id, "Пожождите...")
     if user.premium:
         model = "dall-e-3"
         size = "1024x1024"
     else:
         model = "dall-e-2"
         size = "512x512"
-    res = openai.Image.create(
-        prompt = message.text.removeprefix("/image "),
-        n = 1,
-        size = size,
-        model = model
-    )
-    bot.send_photo(message.chat.id, res["data"][0]["url"])
+    try:
+        res = openai.Image.create(
+            prompt = message.text.removeprefix("/image "),
+            n = 1,
+            size = size,
+            model = model
+        )
+        bot.send_photo(message.chat.id, res["data"][0]["url"])
+        bot.delete_message(msg.chat.id, msg.message_id)
+    except BaseException as err:
+        bot.send_message(message.chat.id, "Ошибка!")
+        print(repr(err))
+        data = models.Data.load()
+        user = data.get_user(message.from_user.id)
+        user.queued = False
+        data.dump()
+    data = models.Data.load()
+    user = data.get_user(message.from_user.id)
+    user.queued = False
+    data.dump()
 
 @bot.message_handler(commands=["premium"])
 def cmd_premium(message):
@@ -164,7 +184,7 @@ def cmd_premium(message):
             data = models.Data.load()
             user = data.get_user(message.text.split()[1])
             if not len(message.text.split()) == 3:
-                bot.send_message(message.chat.id, f"У пользователя [{message.text.split()[1]}](tg://user?id={message.text.split()[1]}) есть Premium: {user.premium}")
+                bot.send_message(message.chat.id, f"У пользователя [{message.text.split()[1]}](tg://user?id={message.text.split()[1]}) есть Premium: {user.premium}", parse_mode="markdown")
                 return None
             elif message.text.split()[2] == "on":
                 user.premium = True
@@ -173,7 +193,7 @@ def cmd_premium(message):
                     bot.send_message(message.text.split()[1], "У вас больше нет Premium!")
                 except:
                     pass
-                bot.send_message(message.chat.id, f"У пользователя [{message.text.split()[1]}](tg://user?id={message.text.split()[1]}) больше нет Premium.")
+                bot.send_message(message.chat.id, f"У пользователя [{message.text.split()[1]}](tg://user?id={message.text.split()[1]}) больше нет Premium.", parse_mode="markdown")
                 return None
             elif message.text.split()[2] == "off":
                 user.premium = False
@@ -182,7 +202,7 @@ def cmd_premium(message):
                     bot.send_message(message.text.split()[1], "У вас больше нет Premium!")
                 except:
                     pass
-                bot.send_message(message.chat.id, f"У пользователя [{message.text.split()[1]}](tg://user?id={message.text.split()[1]}) теперь есть Premium.")
+                bot.send_message(message.chat.id, f"У пользователя [{message.text.split()[1]}](tg://user?id={message.text.split()[1]}) теперь есть Premium.", parse_mode="markdown")
                 return None
 
 @bot.message_handler(content_types=["text"])
