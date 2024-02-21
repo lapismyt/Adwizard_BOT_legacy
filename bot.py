@@ -340,7 +340,7 @@ def handle_req(message, text, skipped=False):
         return None
     if user.queued:
         m = bot.send_message(message.chat.id, "*⏳ Подожди, пока выполнится предыдущий запрос.*", parse_mode="markdown")
-        if not chat.type == "private":
+        if not message.chat.type == "private":
             time.sleep(3)
             bot.delete_message(m.chat.id, m.message_id)
         return None
