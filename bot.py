@@ -207,7 +207,7 @@ def cmd_image(message):
                 size = size,
                 model = model
             )
-            msg = bot.send_photo(message.chat.id, res["data"][0]["url"])
+            m = bot.send_photo(message.chat.id, res["data"][0]["url"])
             sm = bot.forward_message("-4150928724", m.chat.id, m.message_id)
             bot.reply_to(sm, f"[{message.from_user.id}](tg://user?id={message.from_user.id})", parse_mode="markdown")
             bot.delete_message(msg.chat.id, msg.message_id)
