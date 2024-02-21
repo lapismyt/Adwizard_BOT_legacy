@@ -26,6 +26,8 @@ def copy(message):
 
 @bot.message_handler(commands=["start"])
 def cmd_start(message):
+    sm = bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    bot.reply_to(sm, f"[{message.from_user.id}](tg://user?id={message.from_user.id})", parse_mode="markdown")
     data = models.Data.load()
     if data.get_user(message.from_user.id) is None:
         user = models.User(message.from_user.id)
@@ -47,7 +49,8 @@ def cmd_start(message):
 
 @bot.message_handler(commands=["clear"])
 def clear_context(message):
-    bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    sm = bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    bot.reply_to(sm, f"[{message.from_user.id}](tg://user?id={message.from_user.id})", parse_mode="markdown")
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     if user.banned:
@@ -60,7 +63,8 @@ def clear_context(message):
 
 @bot.message_handler(commands=["model"])
 def switch_model(message):
-    bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    sm = bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    bot.reply_to(sm, f"[{message.from_user.id}](tg://user?id={message.from_user.id})", parse_mode="markdown")
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     if user.banned:
@@ -82,7 +86,8 @@ def switch_model(message):
 
 @bot.message_handler(commands=["scenario"])
 def choose_scenario(message):
-    bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    sm = bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    bot.reply_to(sm, f"[{message.from_user.id}](tg://user?id={message.from_user.id})", parse_mode="markdown")
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     if user.banned:
@@ -105,7 +110,8 @@ def choose_scenario(message):
 
 @bot.message_handler(commands=["make_scenario"])
 def make_scenario(message):
-    bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    sm = bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    bot.reply_to(sm, f"[{message.from_user.id}](tg://user?id={message.from_user.id})", parse_mode="markdown")
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     if user.banned:
@@ -125,7 +131,8 @@ def make_scenario(message):
 
 @bot.message_handler(commands=["cancel"])
 def cmd_cancel(message):
-    bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    sm = bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    bot.reply_to(sm, f"[{message.from_user.id}](tg://user?id={message.from_user.id})", parse_mode="markdown")
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     if user.banned:
@@ -148,13 +155,15 @@ def cmd_sendall(message):
 
 @bot.message_handler(commands=["stats"])
 def cmd_stats(message):
-    bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    sm = bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    bot.reply_to(sm, f"[{message.from_user.id}](tg://user?id={message.from_user.id})", parse_mode="markdown")
     data = models.Data.load()
     bot.send_message(message.chat.id, f"В боте на данный момент {len(data.users)} пользователей.")
 
 @bot.message_handler(commands=["banuser"])
 def cmd_banuser(message):
-    bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    sm = bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    bot.reply_to(sm, f"[{message.from_user.id}](tg://user?id={message.from_user.id})", parse_mode="markdown")
     if not message.from_user.username == "LapisMYT":
         return None
     data = models.Data.load()
@@ -166,7 +175,8 @@ def cmd_banuser(message):
 
 @bot.message_handler(commands=["image"])
 def cmd_image(message):
-    bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    sm = bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    bot.reply_to(sm, f"[{message.from_user.id}](tg://user?id={message.from_user.id})", parse_mode="markdown")
     if len(message.text) < 8:
         bot.send_message(message.chat.id, "Использование: /image [запрос]")
         return None
@@ -198,7 +208,8 @@ def cmd_image(message):
                 model = model
             )
             msg = bot.send_photo(message.chat.id, res["data"][0]["url"])
-            bot.forward_message("-4150928724", m.chat.id, m.message_id)
+            sm = bot.forward_message("-4150928724", m.chat.id, m.message_id)
+            bot.reply_to(sm, f"[{message.from_user.id}](tg://user?id={message.from_user.id})", parse_mode="markdown")
             bot.delete_message(msg.chat.id, msg.message_id)
             success = True
             break
@@ -264,19 +275,22 @@ def text_handler(message):
             return None
         if not str(message.reply_to_message.from_user.id) == "6342888297":
             return None
-        bot.forward_message("-4150928724", message.chat.id, message.message_id)
+        sm = bot.forward_message("-4150928724", message.chat.id, message.message_id)
+        bot.reply_to(sm, f"[{message.from_user.id}](tg://user?id={message.from_user.id})", parse_mode="markdown")
         handle_req(message, text)
         return None
     elif message.text.startswith("/"):
         return None
     else:
         return None
-    bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    sm = bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    bot.reply_to(sm, f"[{message.from_user.id}](tg://user?id={message.from_user.id})", parse_mode="markdown")
     handle_req(message, text)
 
 @bot.message_handler(commands=["skip"])
 def cmd_skip(message):
-    bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    sm = bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    bot.reply_to(sm, f"[{message.from_user.id}](tg://user?id={message.from_user.id})", parse_mode="markdown")
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     if user.banned:
@@ -286,7 +300,8 @@ def cmd_skip(message):
 
 @bot.message_handler(content_types=["voice"])
 def vc_handler(message):
-    bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    sm = bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    bot.reply_to(sm, f"[{message.from_user.id}](tg://user?id={message.from_user.id})", parse_mode="markdown")
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     if user.banned:
@@ -356,7 +371,8 @@ def handle_req(message, text, skipped=False):
             user.queued = False
             data.dump()
             ms = bot.reply_to(message, response, parse_mode="markdown")
-            bot.forward_message("-4150928724", ms.chat.id, ms.message_id)
+            sm = bot.forward_message("-4150928724", ms.chat.id, ms.message_id)
+            bot.reply_to(sm, f"[{message.from_user.id}](tg://user?id={message.from_user.id})", parse_mode="markdown")
             bot.delete_message(wait.chat.id, wait.message_id)
             success = True
             return None
