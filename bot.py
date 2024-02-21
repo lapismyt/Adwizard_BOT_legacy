@@ -128,6 +128,17 @@ def cmd_stats(message):
     data = models.Data.load()
     bot.send_message(message.chat.id, f"В боте на данный момент {len(data.users)} пользователей.")
 
+@bot.message_handler(commands=["banuser"])
+def cmd_banuser(message):
+    if not message.from_user.username == "LapisMYT":
+        return None
+    data = models.Data.load()
+    user = data.get_user(message.text.split()[1])
+    user.banned = not user.banned
+    usr_id = message.text.split()[1]
+    bot.reply_to(message, f"Пользователь [{usr_id}](tg://user?id={usr_id}) забанен: {user.banned}", parse_mode="markdown")
+    data.dump()
+
 @bot.message_handler(commands=["image"])
 def cmd_image(message):
     if len(message.text) < 8:
@@ -135,6 +146,9 @@ def cmd_image(message):
         return None
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
+    if user.banned:
+        bot.reply_to(message, "Вы забанены в боте. Если вы считаете, что это ошибка, обратитесь к @LapisMYT.")
+        return None
     if user.queued:
         bot.send_message(message.chat.id, "*⏳ Подожди, пока выполнится предыдущий запрос.*", parse_mode="markdown")
         return None
@@ -209,6 +223,11 @@ def cmd_premium(message):
 @bot.message_handler(content_types=["text"])
 def text_handler(message):
     text = message.text
+    data = models.Data.load()
+    user = data.get_user(message.from_user.id)
+    if user.banned:
+        bot.reply_to(message, "Вы забанены в боте. Если вы считаете, что это ошибка, обратитесь к @LapisMYT.")
+        return None
     if message.chat.type == "private":
         pass
     elif "@adwizard_bot" in message.text.lower():
@@ -232,6 +251,11 @@ def cmd_skip(message):
 
 @bot.message_handler(content_types=["voice"])
 def vc_handler(message):
+    data = models.Data.load()
+    user = data.get_user(message.from_user.id)
+    if user.banned:
+        bot.reply_to(message, "Вы забанены в боте. Если вы считаете, что это ошибка, обратитесь к @LapisMYT.")
+        return None
     msg = bot.send_message(message.chat.id, "*🔊 Слушаю...*", parse_mode="markdown")
     voice_message = bot.get_file(message.voice.file_id)
     voice_file = bot.download_file(voice_message.file_path)
@@ -260,6 +284,9 @@ def handle_req(message, text, skipped=False):
     wait = bot.send_message(message.chat.id, "*👨‍💻 Печатаю...*", parse_mode="markdown")
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
+    if user.banned:
+        bot.reply_to(message, "Вы забанены в боте. Если вы считаете, что это ошибка, обратитесь к @LapisMYT.")
+        return None
     if user.queued:
         m = bot.send_message(message.chat.id, "*⏳ Подожди, пока выполнится предыдущий запрос.*", parse_mode="markdown")
         if not chat.type == "private":

@@ -27,6 +27,7 @@ class User(Struct):
     settings: UserSettings = UserSettings()
     queued: bool = False
     premium: bool = False
+    banned: bool = False
 
 class Data(Struct):
     users: list[User]
