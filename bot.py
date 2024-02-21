@@ -209,10 +209,8 @@ def cmd_premium(message):
 @bot.message_handler(content_types=["text"])
 def text_handler(message):
     text = message.text
-    if chat.type == "private":
+    if message.chat.type == "private":
         pass
-    elif message.text.startswith("/"):
-        return None
     elif message.text.startswith("@Adwizard_BOT"):
         text = message.text.removeprefix("@Adwizard_BOT").strip()
     elif hasattr(message, "reply_to_message"):
@@ -221,6 +219,9 @@ def text_handler(message):
         if not str(message.reply_to_message.from_user.id) == "6342888297":
             return None
         handle_req(message, text)
+        return None
+    elif message.text.startswith("/"):
+        return None
     else:
         return None
     handle_req(message, text)
