@@ -51,7 +51,7 @@ def clear_context(message):
     s = data.get_scenario(user.settings.scenario)
     user.settings.conversation = [{"role": "system", "content": s}]
     data.dump()
-    bot.send_message(message.from_user.id, "*🧹 Переписка очищена.*", parse_mode="markdown")
+    bot.send_message(message.chat.id, "*🧹 Переписка очищена.*", parse_mode="markdown")
 
 @bot.message_handler(commands=["model"])
 def switch_model(message):
@@ -208,7 +208,22 @@ def cmd_premium(message):
 
 @bot.message_handler(content_types=["text"])
 def text_handler(message):
-    handle_req(message, message.text)
+    text = message.text
+    if chat.type == "private":
+        pass
+    elif message.text.startswith("/"):
+        return None
+    elif message.text.startswith("@Adwizard_BOT"):
+        text = message.text.removeprefix("@Adwizard_BOT").strip()
+    elif hasattr(message, "reply_to_message"):
+        if message.reply_to_message is None:
+            return None
+        if not str(message.reply_to_message.from_user.id) == "6342888297":
+            return None
+        handle_req(message, text)
+    else:
+        return None
+    handle_req(message, text)
 
 @bot.message_handler(commands=["skip"])
 def cmd_skip(message):
@@ -229,8 +244,15 @@ def vc_handler(message):
     with sr.AudioFile(f"tmp/{vcid}.wav") as source:
         audio_data = recognizer.record(source)
         text = recognizer.recognize_google(audio_data, language='ru-RU')
-    bot.send_message(message.chat.id, f"*❗ Отвечаю на запрос: {text}*", parse_mode="markdown")
+    bot.reply_to(message, f"*❗ Расшифровано: {text}*", parse_mode="markdown")
     bot.delete_message(msg.chat.id, msg.message_id)
+    if (not "chatgpt" in text.lower()) and (not message.chat.type == "private"):
+        return None
+    elif hasattr(message, "reply_to_message"):
+        if message.reply_to_message is None:
+            return None
+        if not str(message.reply_to_message.from_user.id) == "6342888297":
+            return None
     handle_req(message, text)
 
 def handle_req(message, text, skipped=False):
@@ -238,7 +260,10 @@ def handle_req(message, text, skipped=False):
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     if user.queued:
-        bot.send_message(message.chat.id, "*⏳ Подожди, пока выполнится предыдущий запрос.*", parse_mode="markdown")
+        m = bot.send_message(message.chat.id, "*⏳ Подожди, пока выполнится предыдущий запрос.*", parse_mode="markdown")
+        if not chat.type == "private":
+            time.sleep(3)
+            bot.delete_message(m.chat.id, m.message_id)
         return None
     else:
         user.queued = True
@@ -266,7 +291,7 @@ def handle_req(message, text, skipped=False):
             user.settings.conversation.append({"role": "assistant", "content": response})
             user.queued = False
             data.dump()
-            bot.send_message(message.chat.id, response, parse_mode="markdown")
+            bot.reply_to(message, response, parse_mode="markdown")
             bot.delete_message(wait.chat.id, wait.message_id)
             success = True
             return None
@@ -274,7 +299,7 @@ def handle_req(message, text, skipped=False):
             print(repr(err))
             time.sleep(3)
             tries += 1
-    bot.send_message(message.chat.id, "*⛔ Ошибка!*", parse_mode="markdown")
+    bot.reply_to(message, "*⛔ Ошибка!*", parse_mode="markdown")
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     user.queued = False
