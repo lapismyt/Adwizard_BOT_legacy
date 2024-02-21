@@ -296,6 +296,10 @@ def handle_req(message, text, skipped=False):
             bot.delete_message(wait.chat.id, wait.message_id)
             success = True
             return None
+        except openai.error.InvalidRequestError as err:
+            print(repr(err))
+            tries = 6
+            bot.reply_to(message, "Слишком длинный контекст. Используйте /clear.")
         except BaseException as err:
             print(repr(err))
             time.sleep(3)
