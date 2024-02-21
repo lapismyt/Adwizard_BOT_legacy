@@ -211,7 +211,7 @@ def text_handler(message):
     text = message.text
     if message.chat.type == "private":
         pass
-    elif message.text.strip(.lower()).startswith("@adwizard_bot"):
+    elif message.text.strip().lower().startswith("@adwizard_bot"):
         text = message.text.removeprefix("@Adwizard_BOT").strip()
     elif hasattr(message, "reply_to_message"):
         if message.reply_to_message is None:
