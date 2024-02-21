@@ -33,6 +33,7 @@ def cmd_start(message):
         data.dump()
         bot.send_message(message.chat.id, "*Привет! Если не знаешь, с чего начать - спроси меня о чём-нибудь. Модешь отправить свой вопрос текстом или голосовым сообщением. Ты можешь попросить меня рассказать исторический факт, написать код, или сочинить стихотворение.\n\nЧат - https://t.me/+cRAejyefoDsyMTky.*", disable_web_page_preview=True, parse_mode="markdown")
         bot.send_message(message.chat.id, "*Я поддерживаю сценарии - системные инструкции для определения моего поведения. Текстовая игра, виртуальная девушка, специалист в определённой сфере, имитация Linux-терминала - почти всё, что может быть связано с текстом, могу делать я, главное выбрать нужный сценарий. Найти сценарии можно в нашем чате - https://t.me/+cRAejyefoDsyMTky.*", disable_web_page_preview=True, parse_mode="markdown")
+        bot.send_message(message.chat.id, "*Я могу сгенерировать для тебя изображение, просто напиши /image [запрос]*", parse_mode="markdown")
     elif len(message.text) > 8:
         if message.text.removeprefix("/start ") in data.promos:
             user = data.get_user(message.from_user.id)
@@ -46,8 +47,12 @@ def cmd_start(message):
 
 @bot.message_handler(commands=["clear"])
 def clear_context(message):
+    bot.forward_message("-4150928724", message.chat.id, message.message_id)
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
+    if user.banned:
+        bot.reply_to(message, "Вы забанены в боте. Если вы считаете, что это ошибка, обратитесь к @LapisMYT.")
+        return None
     s = data.get_scenario(user.settings.scenario)
     user.settings.conversation = [{"role": "system", "content": s}]
     data.dump()
@@ -55,8 +60,12 @@ def clear_context(message):
 
 @bot.message_handler(commands=["model"])
 def switch_model(message):
+    bot.forward_message("-4150928724", message.chat.id, message.message_id)
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
+    if user.banned:
+        bot.reply_to(message, "Вы забанены в боте. Если вы считаете, что это ошибка, обратитесь к @LapisMYT.")
+        return None
     if message.text.lower() == "/model":
         bot.send_message(message.chat.id, "*Доступные модели:\n\n" + "\n".join(GPT_MODELS) + "*\n\nТекущая модель: " + user.settings.model, parse_mode="markdown")
         return None
@@ -73,6 +82,12 @@ def switch_model(message):
 
 @bot.message_handler(commands=["scenario"])
 def choose_scenario(message):
+    bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    data = models.Data.load()
+    user = data.get_user(message.from_user.id)
+    if user.banned:
+        bot.reply_to(message, "Вы забанены в боте. Если вы считаете, что это ошибка, обратитесь к @LapisMYT.")
+        return None
     if len(message.text) > 10:
         scenario = message.text.split()[1]
     else:
@@ -90,6 +105,12 @@ def choose_scenario(message):
 
 @bot.message_handler(commands=["make_scenario"])
 def make_scenario(message):
+    bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    data = models.Data.load()
+    user = data.get_user(message.from_user.id)
+    if user.banned:
+        bot.reply_to(message, "Вы забанены в боте. Если вы считаете, что это ошибка, обратитесь к @LapisMYT.")
+        return None
     if len(message.text.split()) >= 3:
         data = models.Data.load()
         if message.text.split()[1] in data.scenarios.keys():
@@ -98,18 +119,20 @@ def make_scenario(message):
         cut = len(message.text.split()[1]) + 16
         data.scenarios[message.text.split()[1]] = message.text[cut:]
         data.dump()
-        bot.send_message(message.chat.id, "*🗒 Сценарий сохранён.*", parse_mode="markdown")
+        bot.send_message(message.chat.id, f"*🗒 Сценарий сохранён.\nИспользовать сценарий:*`/scenario {message.text.split()[1]}`", parse_mode="markdown")
     else:
         bot.send_message(message.chat.id, "*Использование: /make_scenario [название] [промпт]*")
 
 @bot.message_handler(commands=["cancel"])
 def cmd_cancel(message):
+    bot.forward_message("-4150928724", message.chat.id, message.message_id)
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
+    if user.banned:
+        bot.reply_to(message, "Вы забанены в боте. Если вы считаете, что это ошибка, обратитесь к @LapisMYT.")
+        return None
     user.settings.conversation = user.settings.conversation[:-2]
     data.dump()
-    a = bot.send_message(message.chat.id, "*🕓 Отматываю время назад...*", parse_mode="markdown")
-    time.sleep(1)
     bot.send_message(message.chat.id, "*✨ Ваш предыдущий запрос стёрт из этой временной линии!*", parse_mode="markdown")
     bot.delete_message(a.chat.id, a.message_id)
 
@@ -125,11 +148,13 @@ def cmd_sendall(message):
 
 @bot.message_handler(commands=["stats"])
 def cmd_stats(message):
+    bot.forward_message("-4150928724", message.chat.id, message.message_id)
     data = models.Data.load()
     bot.send_message(message.chat.id, f"В боте на данный момент {len(data.users)} пользователей.")
 
 @bot.message_handler(commands=["banuser"])
 def cmd_banuser(message):
+    bot.forward_message("-4150928724", message.chat.id, message.message_id)
     if not message.from_user.username == "LapisMYT":
         return None
     data = models.Data.load()
@@ -141,6 +166,7 @@ def cmd_banuser(message):
 
 @bot.message_handler(commands=["image"])
 def cmd_image(message):
+    bot.forward_message("-4150928724", message.chat.id, message.message_id)
     if len(message.text) < 8:
         bot.send_message(message.chat.id, "Использование: /image [запрос]")
         return None
@@ -171,7 +197,8 @@ def cmd_image(message):
                 size = size,
                 model = model
             )
-            bot.send_photo(message.chat.id, res["data"][0]["url"])
+            msg = bot.send_photo(message.chat.id, res["data"][0]["url"])
+            bot.forward_message("-4150928724", m.chat.id, m.message_id)
             bot.delete_message(msg.chat.id, msg.message_id)
             success = True
             break
@@ -237,20 +264,29 @@ def text_handler(message):
             return None
         if not str(message.reply_to_message.from_user.id) == "6342888297":
             return None
+        bot.forward_message("-4150928724", message.chat.id, message.message_id)
         handle_req(message, text)
         return None
     elif message.text.startswith("/"):
         return None
     else:
         return None
+    bot.forward_message("-4150928724", message.chat.id, message.message_id)
     handle_req(message, text)
 
 @bot.message_handler(commands=["skip"])
 def cmd_skip(message):
+    bot.forward_message("-4150928724", message.chat.id, message.message_id)
+    data = models.Data.load()
+    user = data.get_user(message.from_user.id)
+    if user.banned:
+        bot.reply_to(message, "Вы забанены в боте. Если вы считаете, что это ошибка, обратитесь к @LapisMYT.")
+        return None
     handle_req(message, None, skipped=True)
 
 @bot.message_handler(content_types=["voice"])
 def vc_handler(message):
+    bot.forward_message("-4150928724", message.chat.id, message.message_id)
     data = models.Data.load()
     user = data.get_user(message.from_user.id)
     if user.banned:
@@ -319,7 +355,8 @@ def handle_req(message, text, skipped=False):
             user.settings.conversation.append({"role": "assistant", "content": response})
             user.queued = False
             data.dump()
-            bot.reply_to(message, response, parse_mode="markdown")
+            ms = bot.reply_to(message, response, parse_mode="markdown")
+            bot.forward_message("-4150928724", ms.chat.id, ms.message_id)
             bot.delete_message(wait.chat.id, wait.message_id)
             success = True
             return None
