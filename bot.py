@@ -246,7 +246,7 @@ def cmd_premium(message):
                     bot.send_message(message.text.split()[1], "У вас больше нет Premium!")
                 except:
                     pass
-                bot.send_message(message.chat.id, f"У пользователя [{message.text.split()[1]}](tg://user?id={message.text.split()[1]}) больше нет Premium.", parse_mode="markdown")
+                bot.send_message(message.chat.id, f"У пользователя [{message.text.split()[1]}](tg://user?id={message.text.split()[1]}) теперь есть Premium.", parse_mode="markdown")
                 return None
             elif message.text.split()[2] == "off":
                 user.premium = False
@@ -255,7 +255,7 @@ def cmd_premium(message):
                     bot.send_message(message.text.split()[1], "У вас больше нет Premium!")
                 except:
                     pass
-                bot.send_message(message.chat.id, f"У пользователя [{message.text.split()[1]}](tg://user?id={message.text.split()[1]}) теперь есть Premium.", parse_mode="markdown")
+                bot.send_message(message.chat.id, f"У пользователя [{message.text.split()[1]}](tg://user?id={message.text.split()[1]}) больше нет Premium.", parse_mode="markdown")
                 return None
 
 @bot.message_handler(content_types=["text"])
