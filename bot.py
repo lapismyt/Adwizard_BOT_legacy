@@ -243,7 +243,7 @@ def cmd_premium(message):
                 user.premium = True
                 data.dump()
                 try:
-                    bot.send_message(message.text.split()[1], "У вас больше нет Premium!")
+                    bot.send_message(message.text.split()[1], "У теперь есть Premium!")
                 except:
                     pass
                 bot.send_message(message.chat.id, f"У пользователя [{message.text.split()[1]}](tg://user?id={message.text.split()[1]}) теперь есть Premium.", parse_mode="markdown")
