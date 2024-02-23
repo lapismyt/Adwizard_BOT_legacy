@@ -354,8 +354,6 @@ def handle_req(message, text, skipped=False):
             conv = user.settings.conversation
             if not skipped:
                 conv.append({"role": "user", "content": text})
-            else:
-                conv.append({"role": "system", "content": "Continue, please"})
             response = openai.ChatCompletion.create(
                 model = user.settings.model,
                 messages = conv,
