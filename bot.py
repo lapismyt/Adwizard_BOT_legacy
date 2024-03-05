@@ -141,7 +141,6 @@ def cmd_cancel(message):
     user.settings.conversation = user.settings.conversation[:-2]
     data.dump()
     bot.send_message(message.chat.id, "*✨ Ваш предыдущий запрос стёрт из этой временной линии!*", parse_mode="markdown")
-    bot.delete_message(a.chat.id, a.message_id)
 
 @bot.message_handler(commands=["sendall"])
 def cmd_sendall(message):
@@ -322,7 +321,7 @@ def vc_handler(message):
         text = recognizer.recognize_google(audio_data, language='ru-RU')
     bot.reply_to(message, f"*❗ Расшифровано: {text}*", parse_mode="markdown")
     bot.delete_message(msg.chat.id, msg.message_id)
-    if (not "chatgpt" in text.lower()) and (not message.chat.type == "private"):
+    if (not "chatgpt" in text.lower()) and (message.chat.type == "public"):
         return None
     elif hasattr(message, "reply_to_message"):
         if message.reply_to_message is None:
