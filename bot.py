@@ -331,6 +331,14 @@ def vc_handler(message):
             return None
     handle_req(message, text)
 
+@bot.message_handler(content_types=["document"])
+def handle_txt_doc(message):
+    if message.document.mime_type == "text/plain":
+        file_info = bot.get_file(message.document.file_id)
+        downloaded_file = bot.download_file(file_info.file_path)
+        text = downloaded_file.decode("utf-8")
+        handle_req(message, text)
+
 def handle_req(message, text, skipped=False):
     wait = bot.send_message(message.chat.id, "*👨‍💻 Печатаю...*", parse_mode="markdown")
     data = models.Data.load()
