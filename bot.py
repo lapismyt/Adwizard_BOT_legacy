@@ -190,13 +190,18 @@ def cmd_image(message):
     else:
         user.queued = True
         data.dump()
-    msg = bot.send_message(message.chat.id, "Пожождите...")
+    msg = bot.send_message(message.chat.id, "Подождите...")
     if user.premium:
+        model = "dall-e-2"
+        size = "512x512"
+    elif message.from_user.username.lower() == "lapismyt":
         model = "dall-e-3"
         size = "1024x1024"
     else:
         model = "dall-e-2"
         size = "512x512"
+        bot.send_message(message.chat.id, "Только для Premium!")
+        return None
     success = False
     for x in range(4):
         try:

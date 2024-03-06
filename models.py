@@ -46,7 +46,7 @@ class Data(Struct):
                 if not usr.settings.model in GPT_MODELS:
                     usr.settings.model = "gpt-3.5-turbo"
                 if usr.premium == False:
-                    usr.settings.model = "gpt-3.5-turbo"
+                    usr.settings.model = "gpt-3.5-turbo-0125"
                 return usr
         return None
 
